@@ -1,27 +1,26 @@
 const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
+// Initialize the client
 const client = new Client({
-    puppeteer: {
-        executablePath: '/data/data/com.termux/files/usr/bin/chromium-browser',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    }
+    puppeteer: { headless: true } // Removed executablePath
 });
 
-client.on('qr', qr => {
+// Generate QR code in the Render logs
+client.on('qr', (qr) => {
+    console.log('QR RECEIVED');
     qrcode.generate(qr, { small: true });
 });
 
+// Ready event
 client.on('ready', () => {
     console.log('Bot is ready!');
 });
 
+// Listen to incoming messages (example)
 client.on('message', message => {
-    console.log("Message:", message.body);
-
-    if (message.body.includes("BUY") || message.body.includes("SELL")) {
-        console.log("Signal detected:", message.body);
-    }
+    console.log(`Message from ${message.from}: ${message.body}`);
 });
 
+// Start the client
 client.initialize();
